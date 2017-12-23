@@ -6,4 +6,11 @@
     android:layout_height="match_parent"
     tools:context="com.shields.streamsms.activities.MainActivity">
 
+    <fragment
+        android:id="@+id/messageFragment"
+        android:name="com.shields.streamsms.fragments.MessageFragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        />
+
 </android.support.constraint.ConstraintLayout>
