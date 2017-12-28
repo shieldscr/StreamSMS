@@ -1,6 +1,10 @@
 package com.shields.streamsms.activities
 
+import android.Manifest
 import com.shields.streamsms.R
+import com.shields.streamsms.service.PermissionHelper
+import com.shields.streamsms.service.SMSListener
+import io.reactivex.Scheduler
 import org.junit.Before
 import org.junit.Test
 import org.mockito.Mock
@@ -9,7 +13,11 @@ import org.mockito.MockitoAnnotations.initMocks
 
 class MainActivityImplTest {
 
-    @Mock private lateinit var mainActivity: MainActivity
+    @Mock private lateinit var mainActivityMock: MainActivity
+    @Mock private lateinit var permissionHelper: PermissionHelper
+    @Mock private lateinit var processSchedulerMock: Scheduler
+    @Mock private lateinit var androidSchedulerMock: Scheduler
+    @Mock private lateinit var smsListenerMock: SMSListener
 
     private lateinit var subject: MainActivityImpl
 
@@ -17,13 +25,23 @@ class MainActivityImplTest {
     fun setUp() {
         initMocks(this)
 
-        subject = MainActivityImpl()
+        subject = MainActivityImpl(permissionHelper,
+                processSchedulerMock,
+                androidSchedulerMock,
+                smsListenerMock)
     }
 
     @Test
     fun mainActivityImplSetsContentView() {
-        subject.onCreate(null, mainActivity)
+        subject.onCreate(null, mainActivityMock)
 
-        verify(mainActivity).setContentView(R.layout.activity_main)
+        verify(mainActivityMock).setContentView(R.layout.activity_main)
+    }
+
+    @Test
+    fun onCreateRequestsReadSMSPermission() {
+        subject.onCreate(null, mainActivityMock)
+
+        verify(permissionHelper).requestPermissionIfNeeded(mainActivityMock, Manifest.permission.READ_SMS)
     }
 }
